@@ -1,55 +1,71 @@
 ﻿using StackExchange.Redis;
-using System;
 
-namespace Valuator.Services;
-
-public class RedisService
+namespace Valuator.Services
 {
-    private readonly ConnectionMultiplexer _redis;
-    private readonly IDatabase _db;
-
-    public RedisService()
+    public class RedisService
     {
-        try
-        {
-            _redis = ConnectionMultiplexer.Connect("localhost:6379");
-            _db = _redis.GetDatabase();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Ошибка подключения к Redis: {ex.Message}");
-            throw;
-        }
-    }
+        private readonly IDatabase _db;
 
-    public bool IsConnected()
-    {
-        return _redis != null && _redis.IsConnected;
-    }
+        public RedisService(IConnectionMultiplexer redis)
+        {
+            _db = redis.GetDatabase();
+        }
 
-    public double? GetRank(string id)
-    {
-        string value = _db.StringGet($"rank:{id}");
-        if (value != null)
+        public void SaveRank(string id, double rank)
         {
-            return double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            _db.StringSet($"rank:{id}", rank);
         }
-        else
-        {
-            return 0.0;
-        }
-    }
 
-    public double? GetSimilarity(string id)
-    {
-        string value = _db.StringGet($"similarity:{id}");
-        if (value != null)
+        public double? GetRank(string id)
         {
-            return double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            string value = _db.StringGet($"rank:{id}");
+            if (value != null)
+            {
+                return double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                return 0.0;
+            }
         }
-        else
+
+        public void SaveSimilarity(string id, double similarity)
         {
-            return 0.0;
+            _db.StringSet($"similarity:{id}", similarity);
+        }
+
+        public double? GetSimilarity(string id)
+        {
+            string value = _db.StringGet($"similarity:{id}");
+            if (value != null)
+            {
+                return double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                return 0.0;
+            }
+        }
+
+        public bool IsDuplicateText(string text)
+        {
+            return _db.SetContains("processed_texts", text);
+        }
+
+        public void SaveProcessedText(string text)
+        {
+            _db.SetAdd("processed_texts", text);
+        }
+        public bool IsConnected()
+        {
+            try
+            {
+                return _db.Multiplexer.IsConnected;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

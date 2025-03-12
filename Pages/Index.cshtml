@@ -4,9 +4,8 @@
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <form method="get" asp-page="/About">
-        <button type="submit">About</button>
-    </form>
-</div>
+<form method="post">
+    <textarea name="UserText" rows="5" cols="50">@Model.UserText</textarea>
+    <br />
+    <button type="submit">Отправить</button>
+</form>

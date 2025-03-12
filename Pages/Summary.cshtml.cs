@@ -8,12 +8,13 @@ public class SummaryModel : PageModel
     private readonly ILogger<SummaryModel> _logger;
     private readonly RedisService _redisService;
 
-    public SummaryModel(ILogger<SummaryModel> logger)
+    public SummaryModel(ILogger<SummaryModel> logger, RedisService redisService)
     {
         _logger = logger;
-        _redisService = new RedisService();
+        _redisService = redisService;
     }
 
+    public string Id { get; set; } = string.Empty;
     public double Rank { get; set; }
     public double Similarity { get; set; }
 
@@ -27,12 +28,15 @@ public class SummaryModel : PageModel
             return;
         }
 
+        Id = id ?? "Не указан";
         _logger.LogInformation($"Запрос данных для ID: {id}");
 
         if (!string.IsNullOrEmpty(id))
         {
             Rank = _redisService.GetRank(id) ?? 0.0;
             Similarity = _redisService.GetSimilarity(id) ?? 0.0;
+
+            _logger.LogInformation($"Ответ получен!");
         }
         else
         {
