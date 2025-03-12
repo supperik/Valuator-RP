@@ -52,9 +52,17 @@ namespace Valuator.Services
             return _db.SetContains("processed_texts", text);
         }
 
-        public void SaveProcessedText(string text)
+        public void SaveProcessedText(string textHash)
         {
-            _db.SetAdd("processed_texts", text);
+            _db.SetAdd("processed_texts", textHash);
+        }
+        public void SaveText(string textKey, string text)
+        {
+            _db.StringSet(textKey, text);
+        }
+        public string GetText(string textKey)
+        {
+            return _db.StringGet(textKey);
         }
         public bool IsConnected()
         {

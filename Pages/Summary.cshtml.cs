@@ -33,8 +33,8 @@ public class SummaryModel : PageModel
 
         if (!string.IsNullOrEmpty(id))
         {
-            Rank = _redisService.GetRank(id) ?? 0.0;
-            Similarity = _redisService.GetSimilarity(id) ?? 0.0;
+            Rank = _redisService.GetRank("RANK-" + id) ?? 0.0;
+            Similarity = _redisService.GetSimilarity("SIMILARITY-" + id) ?? 0.0;
 
             _logger.LogInformation($"Ответ получен!");
         }

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Valuator.Services;
-using System.Linq;
+using System.Text;
 
 namespace Valuator.Pages
 {
@@ -15,7 +15,13 @@ namespace Valuator.Pages
         }
 
         [BindProperty]
+
         public string UserText { get; set; } = string.Empty;
+
+        public void OnGet()
+        {
+
+        }
 
         public IActionResult OnPost()
         {
@@ -28,15 +34,21 @@ namespace Valuator.Pages
             string id = Guid.NewGuid().ToString();
 
             double rank = CalculateRank(UserText);
+
+            string textHash = GetTextHash(UserText);
             double similarity = _redisService.IsDuplicateText(UserText) ? 1.0 : 0.0;
 
-            _redisService.SaveRank(id, rank);
-            _redisService.SaveSimilarity(id, similarity);
+            string textKey = "TEXT-" + id;
+            string rankKey = "RANK-" + id;
+            string similarityKey = "SIMILARITY-" + id;
+
+            _redisService.SaveText(textKey, UserText);
+            _redisService.SaveRank(rankKey, rank);
+            _redisService.SaveSimilarity(similarityKey, similarity);
             _redisService.SaveProcessedText(UserText);
 
             return RedirectToPage("/Summary", new { id });
         }
-
         private double CalculateRank(string text)
         {
             int totalChars = text.Length;
@@ -44,6 +56,15 @@ namespace Valuator.Pages
             int nonAlphaChars = totalChars - alphaChars;
 
             return totalChars > 0 ? (double)nonAlphaChars / totalChars : 0.0;
+        }
+        private string GetTextHash(string text)
+        {
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(text);
+                byte[] hashBytes = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hashBytes);
+            }
         }
     }
 }

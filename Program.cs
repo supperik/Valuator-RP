@@ -1,32 +1,40 @@
 using StackExchange.Redis;
 using Valuator.Services;
 
-var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+namespace Valuator;
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     ConnectionMultiplexer.Connect("localhost:6379"));
 
-builder.Services.AddSingleton<RedisService>();
+        builder.Services.AddSingleton<RedisService>();
 
-builder.Logging.SetMinimumLevel(LogLevel.Debug);
+        builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
-builder.Services.AddRazorPages();
+        // Add services to the container.
+        builder.Services.AddRazorPages();
 
-var app = builder.Build();
+        var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
+        // Configure the HTTP request pipeline.
+        if (!app.Environment.IsDevelopment())
+        {
+            app.UseExceptionHandler("/Error");
+        }
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseAuthorization();
+
+        app.MapRazorPages();
+
+        app.Run();
+    }
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapRazorPages();
-
-app.Run();
