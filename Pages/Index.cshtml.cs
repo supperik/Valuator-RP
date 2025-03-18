@@ -8,20 +8,25 @@ namespace Valuator.Pages
     public class IndexModel : PageModel
     {
         private readonly RedisService _redisService;
+        private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(RedisService redisService)
+        public IndexModel(RedisService redisService, ILogger<IndexModel> logger)
         {
             _redisService = redisService;
+            _logger = logger;
+        }
+
+        public void OnGet()
+        {
+            string userIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown IP";
+            _logger.LogInformation($"[LOG] Новый пользователь зашел на сайт с IP: {userIp} в {DateTime.Now}");
+
+            Console.WriteLine($"[CONSOLE] Пользователь с IP {userIp} зашел на сайт в {DateTime.Now}");
         }
 
         [BindProperty]
 
         public string UserText { get; set; } = string.Empty;
-
-        public void OnGet()
-        {
-
-        }
 
         public IActionResult OnPost()
         {
