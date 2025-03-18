@@ -46,3 +46,9 @@ epos\Valuator-RP/temp/client_body_temp" failed (123: The filename, directory nam
 2025/03/18 16:59:10 [emerg] 16452#7828: CreateFile() "C:/Users/supperik/source/repos/Valuator-RP/temp/client_body_temp" failed (80: The file exists)
 2025/03/18 16:59:39 [emerg] 6616#5736: CreateDirectory() "C:\Users\supperik\source\repos\Valuator-RP/temp/client_body_temp" failed (3: The system cannot find the path specified)
 2025/03/18 16:59:57 [emerg] 2928#8780: CreateFile() "C:/Users/supperik/source/repos/Valuator-RP/temp/client_body_temp" failed (80: The file exists)
+2025/03/18 17:02:06 [notice] 16860#3644: signal process started
+2025/03/18 17:02:06 [error] 16860#3644: ReadFile() "C:/Users/supperik/source/repos/Valuator-RP/temp/client_body_temp" failed (1: Incorrect function)
+2025/03/18 17:03:12 [notice] 10188#9872: signal process started
+2025/03/18 17:03:12 [error] 10188#9872: CreateFile() "C:/Users/supperik/source/repos/Valuator-RP/temp/client_body_temp" failed (2: The system cannot find the file specified)
+2025/03/18 17:03:41 [notice] 13176#7892: signal process started
+2025/03/18 17:03:41 [error] 13176#7892: ReadFile() "C:/Users/supperik/source/repos/Valuator-RP/temp/client_body_temp" failed (1: Incorrect function)
