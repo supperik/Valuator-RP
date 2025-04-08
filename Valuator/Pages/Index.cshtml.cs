@@ -50,11 +50,9 @@ namespace Valuator.Pages
             }
             ModelState.AddModelError(string.Empty, "Текст с ключом найден!");
 
-            double similarity = await _redisService.IsDuplicateTextAsync(UserText) ? 1.0 : 0.0;
-            string similarityKey = "SIMILARITY-" + id;
+            
 
             await _redisService.SaveTextAsync(textKey, textHash);
-            await _redisService.SaveSimilarityAsync(similarityKey, similarity);
             await _redisService.SaveProcessedTextAsync(UserText);
 
             try
@@ -64,20 +62,21 @@ namespace Valuator.Pages
                 using var channel = connection.CreateModel();
 
                 channel.QueueDeclare(queue: "rank_tasks", durable: false, exclusive: false, autoDelete: false, arguments: null);
+                channel.QueueDeclare(queue: "similarity_tasks", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
                 var message = new TextProcessingMessage
                 {
                     Id = id,
                     UserText = UserText
                 };
-
                 var jsonMessage = JsonConvert.SerializeObject(message);
-
                 var body = Encoding.UTF8.GetBytes(jsonMessage);
 
                 channel.BasicPublish(exchange: "", routingKey: "rank_tasks", basicProperties: null, body: body);
-
                 _logger.LogInformation($"Отправлено сообщение в очередь: {id}");
+
+                channel.BasicPublish(exchange: "", routingKey: "similarity_tasks", basicProperties: null, body: body);
+                _logger.LogInformation($"Отправлено сообщение в очередь Similarity: {id}");
             }
             catch (Exception ex)
             {

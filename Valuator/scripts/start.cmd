@@ -30,6 +30,18 @@ cd /d "E:\RP\RankCalculator"
 start "RankCalculator" /min cmd /k "dotnet run"
 echo RankCalculator запущен.
 
+:: Запуск SimilarityCalculator
+REM Переход в нужную директорию для запуска RankCalculator
+cd /d "E:\RP\SimilarityCalculator"
+start "SimilarityCalculator" /min cmd /k "dotnet run"
+echo SimilarityCalculator запущен.
+
+:: Запуск EventLogger
+REM Переход в нужную директорию для запуска EventLogger
+cd /d "E:\RP\EventLogger"
+start "EventLogger" /min cmd /k "dotnet run"
+echo EventLogger запущен.
+
 :: Запуск Nginx
 REM Переход в нужную директорию для запуска nginx
 cd /d "E:\RP\Valuator"

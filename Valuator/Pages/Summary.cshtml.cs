@@ -33,16 +33,24 @@ public class SummaryModel : PageModel
 
         if (!string.IsNullOrEmpty(id))
         {
-            Rank = await _redisService.GetRankAsync("RANK-" + id);
-            Similarity = _redisService.GetSimilarity("SIMILARITY-" + id);
+            var rank = await _redisService.GetRankAsync("RANK-" + id);
+            var similarity = await _redisService.GetSimilarityAsync("SIMILARITY-" + id);
 
-            if (Rank == null)
+            if (rank == null)
             {
                 Message = "Оценка содержания не завершена";
             }
             else
             {
-                Message = $"Оценка содержания: {Rank}";
+                if (similarity == null)
+                {
+                    Message = "Оценка содержания не завершена";
+                }
+                else
+                {
+                    Rank = rank;
+                    Similarity = similarity;
+                }   
             }
 
             _logger.LogInformation($"Ответ получен!");

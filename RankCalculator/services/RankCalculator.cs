@@ -28,6 +28,7 @@ namespace RankCalculator.services
             _channel = _connection.CreateModel();
 
             _channel.QueueDeclare(queue: "rank_tasks", durable: false, exclusive: false, autoDelete: false, arguments: null);
+            _channel.ExchangeDeclare("events", ExchangeType.Topic);
 
 
             var consumer = new EventingBasicConsumer(_channel);
@@ -73,6 +74,16 @@ namespace RankCalculator.services
                 await _redisService.SaveRankAsync(rankKey, rank);
 
                 Console.WriteLine($"[CONSOLE] Завершено вычисление для текста с ID: {id} | Rank: {rank}");
+
+                var eventMessage = new
+                {
+                    EventType = "RankCalculated",
+                    Id = id,
+                    Rank = rank
+                };
+                string json = JsonConvert.SerializeObject(eventMessage);
+                var body = Encoding.UTF8.GetBytes(json);
+                _channel.BasicPublish(exchange: "events", routingKey: "rank.calculated", basicProperties: null, body: body);
             }
             catch (Exception ex)
             {

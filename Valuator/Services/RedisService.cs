@@ -70,6 +70,19 @@ namespace Valuator.Services
             }
         }
 
+        public async Task<double?> GetSimilarityAsync(string id)
+        {
+            string value = await _db.StringGetAsync($"similarity:{id}");
+            if (value != null)
+            {
+                return double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public bool IsDuplicateText(string text)
         {
             return _db.SetContains("processed_texts", text);
@@ -77,8 +90,16 @@ namespace Valuator.Services
 
         public async Task<bool> IsDuplicateTextAsync(string text)
         {
-            return await _db.SetContainsAsync("processed_texts", text);
+            bool exists = await _db.SetContainsAsync("processed_texts", text);
+
+            if (!exists)
+            {
+                await _db.SetAddAsync("processed_texts", text);
+            }
+
+            return exists;
         }
+
 
         public void SaveProcessedText(string textHash)
         {
