@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Valuator.Services;
 using System.Text;
 using RabbitMQ.Client;
+using Newtonsoft.Json;
 
 namespace Valuator.Pages
 {
@@ -31,6 +32,7 @@ namespace Valuator.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
+            Console.WriteLine("[CONSOLE] Начало обработки...");
             if (string.IsNullOrWhiteSpace(UserText))
             {
                 ModelState.AddModelError(string.Empty, "Текст не может быть пустым.");
@@ -39,8 +41,21 @@ namespace Valuator.Pages
 
             string id = Guid.NewGuid().ToString();
             string textKey = "TEXT-" + id;
+            string textHash = GetTextHash(UserText);
 
-            await _redisService.SaveTextAsync(textKey, UserText);
+            if (UserText == null)
+            {
+                ModelState.AddModelError(string.Empty, "Текст с ключом не найден!");
+                return Page();
+            }
+            ModelState.AddModelError(string.Empty, "Текст с ключом найден!");
+
+            double similarity = await _redisService.IsDuplicateTextAsync(UserText) ? 1.0 : 0.0;
+            string similarityKey = "SIMILARITY-" + id;
+
+            await _redisService.SaveTextAsync(textKey, textHash);
+            await _redisService.SaveSimilarityAsync(similarityKey, similarity);
+            await _redisService.SaveProcessedTextAsync(UserText);
 
             try
             {
@@ -50,7 +65,16 @@ namespace Valuator.Pages
 
                 channel.QueueDeclare(queue: "rank_tasks", durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                var body = Encoding.UTF8.GetBytes(id);
+                var message = new TextProcessingMessage
+                {
+                    Id = id,
+                    UserText = UserText
+                };
+
+                var jsonMessage = JsonConvert.SerializeObject(message);
+
+                var body = Encoding.UTF8.GetBytes(jsonMessage);
+
                 channel.BasicPublish(exchange: "", routingKey: "rank_tasks", basicProperties: null, body: body);
 
                 _logger.LogInformation($"Отправлено сообщение в очередь: {id}");
@@ -62,5 +86,20 @@ namespace Valuator.Pages
 
             return RedirectToPage("/Summary", new { id });
         }
+
+        private string GetTextHash(string text)
+        {
+            using (var sha256 = System.Security.Cryptography.SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(text);
+                byte[] hashBytes = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hashBytes);
+            }
+        }
+    }
+    public class TextProcessingMessage
+    {
+        public string Id { get; set; }
+        public string UserText { get; set; }
     }
 }

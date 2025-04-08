@@ -34,6 +34,19 @@ namespace Valuator.Services
             }
         }
 
+        public async Task<double?> GetRankAsync(string id)
+        {
+            string value = await _db.StringGetAsync($"rank:{id}");
+            if (value != null)
+            {
+                return double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public void SaveSimilarity(string id, double similarity)
         {
             _db.StringSet($"similarity:{id}", similarity);

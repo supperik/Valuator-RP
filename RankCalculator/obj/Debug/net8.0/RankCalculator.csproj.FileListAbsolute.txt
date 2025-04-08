@@ -63,3 +63,5 @@ E:\RP\RankCalculator\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics
 E:\RP\RankCalculator\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 E:\RP\RankCalculator\bin\Debug\net8.0\Valuator.dll
 E:\RP\RankCalculator\bin\Debug\net8.0\Valuator.pdb
+E:\RP\RankCalculator\obj\Debug\net8.0\RankCalculator.sourcelink.json
+E:\RP\RankCalculator\bin\Debug\net8.0\Newtonsoft.Json.dll

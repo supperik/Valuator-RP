@@ -15,16 +15,16 @@ public class SummaryModel : PageModel
     }
 
     public string Id { get; set; } = string.Empty;
-    public double Rank { get; set; }
-    public double Similarity { get; set; }
+    public double? Rank { get; set; }
+    public double? Similarity { get; set; }
+    public string Message { get; set; }
 
-    public void OnGet(string id)
+    public async Task OnGet(string id)
     {
         if (!_redisService.IsConnected())
         {
             _logger.LogError("Ошибка: Нет подключения к Redis!");
-            Rank = 0.0;
-            Similarity = 0.0;
+            Rank = null;
             return;
         }
 
@@ -33,8 +33,17 @@ public class SummaryModel : PageModel
 
         if (!string.IsNullOrEmpty(id))
         {
-            Rank = _redisService.GetRank("RANK-" + id) ?? 0.0;
-            Similarity = _redisService.GetSimilarity("SIMILARITY-" + id) ?? 0.0;
+            Rank = await _redisService.GetRankAsync("RANK-" + id);
+            Similarity = _redisService.GetSimilarity("SIMILARITY-" + id);
+
+            if (Rank == null)
+            {
+                Message = "Оценка содержания не завершена";
+            }
+            else
+            {
+                Message = $"Оценка содержания: {Rank}";
+            }
 
             _logger.LogInformation($"Ответ получен!");
         }

@@ -1,7 +1,16 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "E:\\RP\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2B7348F2-788C-499A-A886-C1D9346F4F1F}|Valuator\\Valuator.csproj|e:\\rp\\valuator\\valuator.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2B7348F2-788C-499A-A886-C1D9346F4F1F}|Valuator\\Valuator.csproj|solutionrelative:valuator\\valuator.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{08DE1B92-D3E0-4E5E-90FA-D87AB8D0388F}|RankCalculator\\RankCalculator.csproj|e:\\rp\\rankcalculator\\rankcalculator.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{08DE1B92-D3E0-4E5E-90FA-D87AB8D0388F}|RankCalculator\\RankCalculator.csproj|solutionrelative:rankcalculator\\rankcalculator.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +18,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Valuator",
+              "DocumentMoniker": "E:\\RP\\Valuator\\Valuator.csproj",
+              "RelativeDocumentMoniker": "Valuator\\Valuator.csproj",
+              "ToolTip": "E:\\RP\\Valuator\\Valuator.csproj",
+              "RelativeToolTip": "Valuator\\Valuator.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-04-08T09:54:18.841Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RankCalculator",
+              "DocumentMoniker": "E:\\RP\\RankCalculator\\RankCalculator.csproj",
+              "RelativeDocumentMoniker": "RankCalculator\\RankCalculator.csproj",
+              "ToolTip": "E:\\RP\\RankCalculator\\RankCalculator.csproj",
+              "RelativeToolTip": "RankCalculator\\RankCalculator.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-04-08T09:54:16.398Z",
+              "EditorCaption": ""
             }
           ]
         }
