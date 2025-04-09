@@ -78,15 +78,25 @@ namespace RankCalculator.services
                 var eventMessage = new
                 {
                     EventType = "RankCalculated",
-                    Id = id,
+                    Id = "TEXT" + id,
                     Rank = rank
                 };
                 string json = JsonConvert.SerializeObject(eventMessage);
                 var body = Encoding.UTF8.GetBytes(json);
-                _channel.BasicPublish(exchange: "events", routingKey: "rank.calculated", basicProperties: null, body: body);
+                _channel.BasicPublish(exchange: "events", routingKey: "rank_events", basicProperties: null, body: body);
             }
             catch (Exception ex)
             {
+                var eventMessage = new
+                {
+                    EventType = "RankCalculatedError",
+                    Id = "TEXT" + id,
+                    Rank = "null"
+                };
+                string json = JsonConvert.SerializeObject(eventMessage);
+                var body = Encoding.UTF8.GetBytes(json);
+                _channel.BasicPublish(exchange: "events", routingKey: "rank_events", basicProperties: null, body: body);
+
                 Console.WriteLine($"[CONSOLE] Ошибка вычисления rank и similarity: {ex.Message}");
             }
         }

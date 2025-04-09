@@ -1,16 +1,16 @@
-using EventsLogger.Events;
+using EventsLoggerNamespace.Events;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace EventsLogger;
+namespace EventsLoggerNamespace.Services;
 
-public class Worker : BackgroundService
+public class EventsLogger : BackgroundService
 {
-    private readonly ILogger<Worker> _logger;
+    private readonly ILogger<EventsLogger> _logger;
 
-    public Worker(ILogger<Worker> logger)
+    public EventsLogger(ILogger<EventsLogger> logger)
     {
         _logger = logger;
     }
@@ -39,9 +39,9 @@ public class Worker : BackgroundService
         {
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
-            var simEvent = JsonConvert.DeserializeObject<SimilarityCalculatedEvent>(message);
+            var similarityEvent = JsonConvert.DeserializeObject<SimilarityCalculatedEvent>(message);
 
-            Console.WriteLine($"[SimilarityCalculated] ID: {simEvent.Id}, Similarity: {simEvent.Similarity}");
+            Console.WriteLine($"[SimilarityCalculated] ID: {similarityEvent.Id}, Similarity: {similarityEvent.Similarity}");
         };
 
         channel.BasicConsume(queue: "rank_events", autoAck: true, consumer: rankConsumer);
@@ -49,10 +49,7 @@ public class Worker : BackgroundService
 
         Console.WriteLine("[EventLogger] Подписка на события запущена...");
 
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Task.Delay(Timeout.Infinite, stoppingToken);
-        }
-    }
 
+        await Task.Delay(Timeout.Infinite, stoppingToken);
+    }
 }

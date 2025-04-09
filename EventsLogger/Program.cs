@@ -1,7 +1,7 @@
-using EventsLogger;
+using EventsLoggerNamespace.Services;
 
 var builder = Host.CreateApplicationBuilder(args);
-builder.Services.AddHostedService<Worker>();
+builder.Services.AddHostedService<EventsLogger>();
 
 var host = builder.Build();
 host.Run();

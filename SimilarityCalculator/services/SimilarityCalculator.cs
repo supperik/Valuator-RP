@@ -80,15 +80,25 @@ namespace SimilarityCalculator.services
                 var eventMessage = new
                 {
                     EventType = "SimilarityCalculated",
-                    Id = id,
+                    Id = "TEXT" + id,
                     Similarity = similarity
                 };
                 string json = JsonConvert.SerializeObject(eventMessage);
                 var body = Encoding.UTF8.GetBytes(json);
-                _channel.BasicPublish(exchange: "events", routingKey: "similarity.calculated", basicProperties: null, body: body);
+                _channel.BasicPublish(exchange: "events", routingKey: "similarity_events", basicProperties: null, body: body);
             }
             catch (Exception ex)
             {
+                var eventMessage = new
+                {
+                    EventType = "SimilarityCalculatedError",
+                    Id = "TEXT" + id,
+                    Similarity = "null"
+                };
+                string json = JsonConvert.SerializeObject(eventMessage);
+                var body = Encoding.UTF8.GetBytes(json);
+                _channel.BasicPublish(exchange: "events", routingKey: "similarity_events", basicProperties: null, body: body);
+
                 Console.WriteLine($"[CONSOLE] Ошибка вычисления rank и similarity: {ex.Message}");
             }
         }

@@ -22,8 +22,6 @@ namespace Valuator.Pages
         {
             string userIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown IP";
             _logger.LogInformation($"[LOG] Новый пользователь зашел на сайт с IP: {userIp} в {DateTime.Now}");
-
-            Console.WriteLine($"[CONSOLE] Пользователь с IP {userIp} зашел на сайт в {DateTime.Now}");
         }
 
         [BindProperty]

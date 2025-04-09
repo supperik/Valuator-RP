@@ -1,4 +1,4 @@
-﻿namespace EventsLogger.Events
+﻿namespace EventsLoggerNamespace.Events
 {
     public class SimilarityCalculatedEvent
     {

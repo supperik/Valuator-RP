@@ -38,9 +38,9 @@ echo SimilarityCalculator запущен.
 
 :: Запуск EventLogger
 REM Переход в нужную директорию для запуска EventLogger
-cd /d "E:\RP\EventLogger"
-start "EventLogger" /min cmd /k "dotnet run"
-echo EventLogger запущен.
+cd /d "E:\RP\EventsLogger
+start "EventsLogger" /min cmd /k "dotnet run"
+echo EventsLogger запущен.
 
 :: Запуск Nginx
 REM Переход в нужную директорию для запуска nginx
