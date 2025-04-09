@@ -2,7 +2,8 @@
 {
     public class RankCalculatedEvent
     {
-        public string Id { get; set; }
-        public double Rank { get; set; }
+        public string EventType { get; set; }
+        public string? Id { get; set; }
+        public string? Rank { get; set; }
     }
 }

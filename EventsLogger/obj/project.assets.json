@@ -1633,23 +1633,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\mrnik\\.nuget\\packages\\": {},
+    "C:\\Users\\supperik\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\RP\\EventsLogger\\EventsLogger.csproj",
+      "projectUniqueName": "C:\\Users\\supperik\\source\\repos\\Valuator-RP\\EventsLogger\\EventsLogger.csproj",
       "projectName": "EventsLogger",
-      "projectPath": "E:\\RP\\EventsLogger\\EventsLogger.csproj",
-      "packagesPath": "C:\\Users\\mrnik\\.nuget\\packages\\",
-      "outputPath": "E:\\RP\\EventsLogger\\obj\\",
+      "projectPath": "C:\\Users\\supperik\\source\\repos\\Valuator-RP\\EventsLogger\\EventsLogger.csproj",
+      "packagesPath": "C:\\Users\\supperik\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\supperik\\source\\repos\\Valuator-RP\\EventsLogger\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\mrnik\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\supperik\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1711,7 +1711,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

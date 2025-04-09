@@ -2,7 +2,8 @@
 {
     public class SimilarityCalculatedEvent
     {
-        public string Id { get; set; }
-        public double Similarity { get; set; }
+        public string EventType { get; set; }
+        public string? Id { get; set; }
+        public string? Similarity { get; set; }
     }
 }

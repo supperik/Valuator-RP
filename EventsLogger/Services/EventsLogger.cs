@@ -21,8 +21,13 @@ public class EventsLogger : BackgroundService
         using var connection = factory.CreateConnection();
         using var channel = connection.CreateModel();
 
+        channel.ExchangeDeclare("events", ExchangeType.Topic);
+
         channel.QueueDeclare(queue: "rank_events", durable: false, exclusive: false, autoDelete: false, arguments: null);
         channel.QueueDeclare(queue: "similarity_events", durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+        channel.QueueBind(queue: "similarity_events", exchange: "events", routingKey: "similarity_events");
+        channel.QueueBind(queue: "rank_events", exchange: "events", routingKey: "rank_events");
 
         var rankConsumer = new EventingBasicConsumer(channel);
         rankConsumer.Received += (model, ea) =>
