@@ -4,6 +4,7 @@ using Valuator.Services;
 using System.Text;
 using RabbitMQ.Client;
 using Newtonsoft.Json;
+using System.Threading.Channels;
 
 namespace Valuator.Pages
 {
@@ -53,11 +54,13 @@ namespace Valuator.Pages
             await _redisService.SaveTextAsync(unhashedTextKey, UserText);
             await _redisService.SaveProcessedTextAsync(UserText);
 
+            var factory = new ConnectionFactory() { HostName = "localhost" };
+            using var connection = factory.CreateConnection();
+            using var channel = connection.CreateModel();
+
             try
             {
-                var factory = new ConnectionFactory() { HostName = "localhost" };
-                using var connection = factory.CreateConnection();
-                using var channel = connection.CreateModel();
+                
 
                 channel.QueueDeclare(queue: "rank_tasks", durable: false, exclusive: false, autoDelete: false, arguments: null);
                 channel.QueueDeclare(queue: "similarity_tasks", durable: false, exclusive: false, autoDelete: false, arguments: null);
@@ -78,6 +81,40 @@ namespace Valuator.Pages
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка при отправке сообщения в очередь RabbitMQ.");
+            }
+
+            try
+            {
+                double similarity = await _redisService.IsDuplicateTextAsync(textHash) ? 1.0 : 0.0;
+                string similarityKey = "SIMILARITY-" + id;
+
+                await _redisService.SaveSimilarityAsync(similarityKey, similarity);
+
+                Console.WriteLine($"[CONSOLE] Завершено вычисление для текста с ID: {id} | Similarity: {similarity}");
+
+                var eventMessage = new
+                {
+                    EventType = "SimilarityCalculated",
+                    Id = "TEXT" + id,
+                    Similarity = similarity
+                };
+                string json = JsonConvert.SerializeObject(eventMessage);
+                var body = Encoding.UTF8.GetBytes(json);
+                channel.BasicPublish(exchange: "events", routingKey: "similarity_events", basicProperties: null, body: body);
+            }
+            catch (Exception ex)
+            {
+                var eventMessage = new
+                {
+                    EventType = "SimilarityCalculatedError",
+                    Id = "TEXT" + id,
+                    Similarity = "null"
+                };
+                string json = JsonConvert.SerializeObject(eventMessage);
+                var body = Encoding.UTF8.GetBytes(json);
+                channel.BasicPublish(exchange: "events", routingKey: "similarity_events", basicProperties: null, body: body);
+
+                Console.WriteLine($"[CONSOLE] Ошибка вычисления rank и similarity: {ex.Message}");
             }
 
             return RedirectToPage("/Summary", new { id });

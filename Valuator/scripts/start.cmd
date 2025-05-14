@@ -26,36 +26,36 @@ echo Экземпляр на 5002 запущен.
 
 :: Запуск RankCalculator
 REM Переход в нужную директорию для запуска RankCalculator
-cd /d "C:\Users\supperik\source\repos\Valuator-RP\RankCalculator"
+cd /d "E:\RP\RankCalculator"
 start "RankCalculator" /min cmd /k "dotnet run"
 echo RankCalculator запущен.
 
 :: Запуск RankCalculator
 REM Переход в нужную директорию для запуска RankCalculator
-cd /d "C:\Users\supperik\source\repos\Valuator-RP\RankCalculator"
+cd /d "E:\RP\RankCalculator"
 start "RankCalculator" /min cmd /k "dotnet run"
 echo RankCalculator запущен.
 
 :: Запуск SimilarityCalculator
 REM Переход в нужную директорию для запуска RankCalculator
-cd /d "C:\Users\supperik\source\repos\Valuator-RP\SimilarityCalculator"
+cd /d "E:\RP\SimilarityCalculator"
 start "SimilarityCalculator" /min cmd /k "dotnet run"
 echo SimilarityCalculator запущен.
 
 :: Запуск EventLogger
 REM Переход в нужную директорию для запуска EventLogger
-cd /d "C:\Users\supperik\source\repos\Valuator-RP\EventsLogger"
+cd /d "E:\RP\EventsLogger"
 start "EventsLogger" /min cmd /k "dotnet run"
 echo EventsLogger запущен.
 
 :: Запуск EventLogger
 REM Переход в нужную директорию для запуска EventLogger
-cd /d "C:\Users\supperik\source\repos\Valuator-RP\EventsLogger"
+cd /d "E:\RP\EventsLogger"
 start "EventsLogger" /min cmd /k "dotnet run"
 echo EventsLogger запущен.
 
 :: Запуск Nginx
 REM Переход в нужную директорию для запуска nginx
-cd /d "C:\Users\supperik\source\repos\Valuator-RP\Valuator"
+cd /d "E:\RP\Valuator"
 start "Nginx" /min cmd /c "nginx"
 echo Nginx запущен.
