@@ -44,7 +44,7 @@ public class SummaryModel : PageModel
             }
             else
             {
-                SimilarityDisplay = similarity.ToString();  
+                RankDisplay = rank.ToString();  
             }
 
             if (similarity == null)

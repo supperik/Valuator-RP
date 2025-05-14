@@ -23,11 +23,11 @@ public class EventsLogger : BackgroundService
 
         channel.ExchangeDeclare("events", ExchangeType.Topic);
 
-        channel.QueueDeclare(queue: "rank_events", durable: false, exclusive: false, autoDelete: false, arguments: null);
-        channel.QueueDeclare(queue: "similarity_events", durable: false, exclusive: false, autoDelete: false, arguments: null);
+        var similarityQueue = channel.QueueDeclare(queue: "", durable: false, exclusive: true, autoDelete: true);
+        var rankQueue = channel.QueueDeclare(queue: "", durable: false, exclusive: true, autoDelete: true);
 
-        channel.QueueBind(queue: "similarity_events", exchange: "events", routingKey: "similarity_events");
-        channel.QueueBind(queue: "rank_events", exchange: "events", routingKey: "rank_events");
+        channel.QueueBind(queue: similarityQueue.QueueName, exchange: "events", routingKey: "similarity_events");
+        channel.QueueBind(queue: rankQueue.QueueName, exchange: "events", routingKey: "rank_events");
 
         var rankConsumer = new EventingBasicConsumer(channel);
         rankConsumer.Received += (model, ea) =>
@@ -49,8 +49,8 @@ public class EventsLogger : BackgroundService
             Console.WriteLine($"[SimilarityCalculated] ID: {similarityEvent.Id}, Similarity: {similarityEvent.Similarity}");
         };
 
-        channel.BasicConsume(queue: "rank_events", autoAck: true, consumer: rankConsumer);
-        channel.BasicConsume(queue: "similarity_events", autoAck: true, consumer: similarityConsumer);
+        channel.BasicConsume(queue: rankQueue.QueueName, autoAck: true, consumer: rankConsumer);
+        channel.BasicConsume(queue: similarityQueue.QueueName, autoAck: true, consumer: similarityConsumer);
 
         Console.WriteLine("[EventLogger] Подписка на события запущена...");
 

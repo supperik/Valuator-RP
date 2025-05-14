@@ -42,7 +42,8 @@ namespace SimilarityCalculator.services
                     var message = JsonConvert.DeserializeObject<TextProcessingMessage>(jsonMessage);
 
                     var id = message.Id;
-                    var userText = message.UserText;
+
+                    string userText = await _redisService.GetTextAsync("UNHASHED-TEXT-" + id);
 
                     Console.WriteLine($"[CONSOLE] Получено сообщение: Id = {id}, UserText = {userText}");
 

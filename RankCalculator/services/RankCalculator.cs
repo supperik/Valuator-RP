@@ -41,7 +41,8 @@ namespace RankCalculator.services
                     var message = JsonConvert.DeserializeObject<TextProcessingMessage>(jsonMessage);
 
                     var id = message.Id;
-                    var userText = message.UserText;
+
+                    string userText = await _redisService.GetTextAsync("UNHASHED-TEXT-" + id);
 
                     Console.WriteLine($"[CONSOLE] Получено сообщение: Id = {id}, UserText = {userText}");
 
@@ -71,6 +72,8 @@ namespace RankCalculator.services
                 double rank = CalculateRank(UserText);
                 string rankKey = "RANK-" + id;
 
+
+                Thread.Sleep(1000);
                 await _redisService.SaveRankAsync(rankKey, rank);
 
                 Console.WriteLine($"[CONSOLE] Завершено вычисление для текста с ID: {id} | Rank: {rank}");

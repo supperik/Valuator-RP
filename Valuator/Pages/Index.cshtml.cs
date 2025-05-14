@@ -39,6 +39,7 @@ namespace Valuator.Pages
 
             string id = Guid.NewGuid().ToString();
             string textKey = "TEXT-" + id;
+            string unhashedTextKey = "UNHASHED-TEXT-" + id;
             string textHash = GetTextHash(UserText);
 
             if (UserText == null)
@@ -48,9 +49,8 @@ namespace Valuator.Pages
             }
             ModelState.AddModelError(string.Empty, "Текст с ключом найден!");
 
-            
-
             await _redisService.SaveTextAsync(textKey, textHash);
+            await _redisService.SaveTextAsync(unhashedTextKey, UserText);
             await _redisService.SaveProcessedTextAsync(UserText);
 
             try
@@ -64,8 +64,7 @@ namespace Valuator.Pages
 
                 var message = new TextProcessingMessage
                 {
-                    Id = id,
-                    UserText = UserText
+                    Id = id
                 };
                 var jsonMessage = JsonConvert.SerializeObject(message);
                 var body = Encoding.UTF8.GetBytes(jsonMessage);
@@ -97,6 +96,5 @@ namespace Valuator.Pages
     public class TextProcessingMessage
     {
         public string Id { get; set; }
-        public string UserText { get; set; }
     }
 }
