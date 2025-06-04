@@ -1,5 +1,6 @@
 using StackExchange.Redis;
 using Valuator.Services;
+using Valuator.Sharding;
 
 
 namespace Valuator;
@@ -10,10 +11,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
-    ConnectionMultiplexer.Connect("localhost:6379"));
-
-        builder.Services.AddSingleton<RedisService>();
+        builder.Services.AddSingleton<RedisShardManager>();
 
         builder.Logging.SetMinimumLevel(LogLevel.Debug);
 

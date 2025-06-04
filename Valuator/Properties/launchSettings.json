@@ -15,7 +15,11 @@
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5234",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DB_MAIN": "localhost:5000",
+        "DB_RU": "localhost:5001",
+        "DB_EU": "localhost:5002",
+        "DB_ASIA": "localhost:5003"
       }
     },
     "https": {
@@ -24,14 +28,22 @@
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7142;http://localhost:5234",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DB_MAIN": "localhost:5000",
+        "DB_RU": "localhost:5001",
+        "DB_EU": "localhost:5002",
+        "DB_ASIA": "localhost:5003"
       }
     },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DB_MAIN": "localhost:5000",
+        "DB_RU": "localhost:5001",
+        "DB_EU": "localhost:5002",
+        "DB_ASIA": "localhost:5003"
       }
     }
   }

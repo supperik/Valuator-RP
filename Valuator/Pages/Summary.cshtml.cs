@@ -1,17 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Valuator.Services;
+using Valuator.Sharding;
 
 namespace Valuator.Pages;
 public class SummaryModel : PageModel
 {
     private readonly ILogger<SummaryModel> _logger;
-    private readonly RedisService _redisService;
+    private readonly RedisShardManager _redisShardManager;
 
-    public SummaryModel(ILogger<SummaryModel> logger, RedisService redisService)
+    public SummaryModel(ILogger<SummaryModel> logger, RedisShardManager redisShardManager)
     {
         _logger = logger;
-        _redisService = redisService;
+        _redisShardManager = redisShardManager;
     }
 
     public string Id { get; set; } = string.Empty;
@@ -20,7 +21,11 @@ public class SummaryModel : PageModel
 
     public async Task OnGet(string id)
     {
-        if (!_redisService.IsConnected())
+        var region = _redisShardManager.GetRegion(id);
+        _redisShardManager.LogLookup(id, region.ToString(), _logger);
+        var regionDb = _redisShardManager.GetRedisServiceByRegion(region);
+
+        if (!regionDb.IsConnected())
         {
             _logger.LogError("Ошибка: Нет подключения к Redis!");
             return;
@@ -31,8 +36,8 @@ public class SummaryModel : PageModel
 
         if (!string.IsNullOrEmpty(id))
         {
-            var rank = await _redisService.GetRankAsync("RANK-" + id);
-            var similarity = await _redisService.GetSimilarityAsync("SIMILARITY-" + id);
+            var rank = await regionDb.GetRankAsync("RANK-" + id);
+            var similarity = await regionDb.GetSimilarityAsync("SIMILARITY-" + id);
 
             string? message = null;
 

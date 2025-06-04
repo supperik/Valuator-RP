@@ -5,17 +5,18 @@ using System.Text;
 using RabbitMQ.Client;
 using Newtonsoft.Json;
 using System.Threading.Channels;
+using Valuator.Sharding;
 
 namespace Valuator.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly RedisService _redisService;
+        private readonly RedisShardManager _redisShardManager;
         private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(RedisService redisService, ILogger<IndexModel> logger)
+        public IndexModel(RedisShardManager redisShardManager, ILogger<IndexModel> logger)
         {
-            _redisService = redisService;
+            _redisShardManager = redisShardManager;
             _logger = logger;
         }
 
@@ -29,6 +30,10 @@ namespace Valuator.Pages
 
         public string UserText { get; set; } = string.Empty;
 
+        [BindProperty]
+        public string Country { get; set; }
+
+
         public async Task<IActionResult> OnPostAsync()
         {
             Console.WriteLine("[CONSOLE] Начало обработки...");
@@ -38,10 +43,16 @@ namespace Valuator.Pages
                 return Page();
             }
 
+            Region region = CountryRegionMapper.GetRegion(Country);
+            var regionDb = _redisShardManager.GetRedisServiceByRegion(region.ToString());
+
             string id = Guid.NewGuid().ToString();
             string textKey = "TEXT-" + id;
             string unhashedTextKey = "UNHASHED-TEXT-" + id;
             string textHash = GetTextHash(UserText);
+
+            _redisShardManager.SetShardMap(id, region.ToString());
+            _redisShardManager.LogLookup(id, region.ToString(), _logger);
 
             if (UserText == null)
             {
@@ -50,9 +61,9 @@ namespace Valuator.Pages
             }
             ModelState.AddModelError(string.Empty, "Текст с ключом найден!");
 
-            await _redisService.SaveTextAsync(textKey, textHash);
-            await _redisService.SaveTextAsync(unhashedTextKey, UserText);
-            await _redisService.SaveProcessedTextAsync(UserText);
+            await regionDb.SaveTextAsync(textKey, textHash);
+            await regionDb.SaveTextAsync(unhashedTextKey, UserText);
+            await regionDb.SaveProcessedTextAsync(UserText);
 
             var factory = new ConnectionFactory() { HostName = "localhost" };
             using var connection = factory.CreateConnection();
@@ -85,10 +96,10 @@ namespace Valuator.Pages
 
             try
             {
-                double similarity = await _redisService.IsDuplicateTextAsync(textHash) ? 1.0 : 0.0;
+                double similarity = await regionDb.IsDuplicateTextAsync(textHash) ? 1.0 : 0.0;
                 string similarityKey = "SIMILARITY-" + id;
 
-                await _redisService.SaveSimilarityAsync(similarityKey, similarity);
+                await regionDb.SaveSimilarityAsync(similarityKey, similarity);
 
                 Console.WriteLine($"[CONSOLE] Завершено вычисление для текста с ID: {id} | Similarity: {similarity}");
 

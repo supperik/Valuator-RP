@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using StackExchange.Redis;
 using Valuator.Services;
+using Valuator.Sharding;
 
 namespace RankCalculator.services;
 public class Program
@@ -26,11 +27,7 @@ public class Program
                     };
                 });
 
-                services.AddSingleton<IConnectionMultiplexer>(sp =>
-                    ConnectionMultiplexer.Connect("localhost:6379")
-                );
-
-                services.AddSingleton<RedisService>();
+                services.AddSingleton<RedisShardManager>();
 
                 services.AddHostedService<RankCalculator>();
 

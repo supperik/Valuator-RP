@@ -6,19 +6,20 @@ using Valuator.Services;
 using Valuator.Pages;
 
 using Newtonsoft.Json;
+using Valuator.Sharding;
 
 namespace RankCalculator.services
 {
     public class RankCalculator : IHostedService
     {
-        private readonly RedisService _redisService;
+        private readonly RedisShardManager _redisShardManager;
         private readonly IConnectionFactory _connectionFactory;
         private IConnection _connection;
         private IModel _channel;
 
-        public RankCalculator(RedisService redisService, IConnectionFactory connectionFactory)
+        public RankCalculator(RedisShardManager redisShardManager, IConnectionFactory connectionFactory)
         {
-            _redisService = redisService;
+            _redisShardManager = redisShardManager;
             _connectionFactory = connectionFactory;
         }
 
@@ -41,12 +42,15 @@ namespace RankCalculator.services
                     var message = JsonConvert.DeserializeObject<TextProcessingMessage>(jsonMessage);
 
                     var id = message.Id;
+                    var region = _redisShardManager.GetRegion(id);
+                    _redisShardManager.LogLookup(id, region.ToString());
+                    var regionDb = _redisShardManager.GetRedisServiceByRegion(region.ToString());
 
-                    string userText = await _redisService.GetTextAsync("UNHASHED-TEXT-" + id);
+                    string userText = await regionDb.GetTextAsync("UNHASHED-TEXT-" + id);
 
                     Console.WriteLine($"[CONSOLE] Получено сообщение: Id = {id}, UserText = {userText}");
 
-                    await ProcessTextAsync(id, userText);
+                    await ProcessTextAsync(id, userText, regionDb);
                 }
                 catch (Exception ex)
                 {
@@ -65,7 +69,7 @@ namespace RankCalculator.services
             return Task.CompletedTask;
         }
 
-        private async Task ProcessTextAsync(string id, string? UserText)
+        private async Task ProcessTextAsync(string id, string? UserText, RedisService redis)
         {
             try
             {
@@ -74,7 +78,7 @@ namespace RankCalculator.services
 
 
                 Thread.Sleep(1000);
-                await _redisService.SaveRankAsync(rankKey, rank);
+                await redis.SaveRankAsync(rankKey, rank);
 
                 Console.WriteLine($"[CONSOLE] Завершено вычисление для текста с ID: {id} | Rank: {rank}");
 
